@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -55,8 +56,8 @@ public class User {
 
     @Column(name = "balance", length = 60, nullable = false)
     @NotNull(groups = { CreateUser.class, UpdateUser.class })
-    @NotEmpty(groups = { CreateUser.class, UpdateUser.class })
-    @Size(groups = { CreateUser.class, UpdateUser.class }, min = 1, max = 60)
+    @DecimalMin(value = "0.0", inclusive = false, groups = { CreateUser.class, UpdateUser.class })
+
     private Double balance;
 
     public User() {
