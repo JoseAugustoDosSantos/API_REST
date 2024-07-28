@@ -35,13 +35,13 @@ public class User {
     private Long id;
 
     
-    @Column(name = "username", length = 100, nullable = false, unique = true)
+    @Column(name = "username", length = 100, nullable = false, unique = false)
     @NotNull
     @NotEmpty
     @Size(min = 2, max = 100)
     private String username;
 
-    @Column(name = "email", length = 100, nullable = false, unique = true)
+    @Column(name = "email", length = 100, nullable = true, unique = true)
     @NotNull(groups = CreateUser.class)
     @NotEmpty(groups = CreateUser.class)
     @Size(groups = CreateUser.class, min = 2, max = 100)
@@ -49,7 +49,7 @@ public class User {
 
     @JsonProperty(access = Access.WRITE_ONLY)
     @Column(name = "password", length = 60, nullable = false)
-    @NotNull(groups = { CreateUser.class, UpdateUser.class })
+    @NotNull(groups = { CreateUser.class })
     @NotEmpty(groups = { CreateUser.class, UpdateUser.class })
     @Size(groups = { CreateUser.class, UpdateUser.class }, min = 2, max = 60)
     private String password;

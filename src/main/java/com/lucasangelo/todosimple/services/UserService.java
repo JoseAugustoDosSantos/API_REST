@@ -7,6 +7,8 @@ import com.lucasangelo.todosimple.repositories.UserRepository;
 
 import jakarta.transaction.Transactional;
 
+import com.lucasangelo.todosimple.exception.EmailAlreadyExistsException;
+import com.lucasangelo.todosimple.exception.UserNotFoundException;
 import com.lucasangelo.todosimple.models.User;
 import java.util.Optional;
 
@@ -19,27 +21,36 @@ public class UserService {
     
     public User findById(Long id){
         Optional<User> user = this.userRepository.findById(id);
-        return user.orElseThrow(() -> new RuntimeException(
-            "Usuário não encontrado! Id: " + id + ", Tipo: " + User.class.getName()
+        return user.orElseThrow(() -> new UserNotFoundException(
+           // "Usuário não encontrado! Id: " + id + ", Tipo: " + User.class.getName()
+           "User not found!" 
         ));
     }
     
     @Transactional
     public User create(User obj){
-        obj.setId(null);
-        obj = this.userRepository.save(obj);
-        return obj;
+        try {
+            obj.setId(null);
+            obj = this.userRepository.save(obj);
+            return obj;
+        } catch (Exception e) {
+            throw new EmailAlreadyExistsException(
+                "This email is already signed up!");
+        }
+   
 
     }
 
     @Transactional
     public User update(User obj){
-        User newObj = findById(obj.getId());
-        newObj.setPassword(obj.getPassword());
-        newObj.setUsername(obj.getUsername());
-        newObj.setBalance(obj.getBalance());
-        obj = this.userRepository.save(obj);
-        return this.userRepository.save(newObj);
+
+            User newObj = findById(obj.getId());
+            newObj.setPassword(obj.getPassword());
+            newObj.setUsername(obj.getUsername());
+            newObj.setBalance(obj.getBalance());
+            obj = this.userRepository.save(obj);
+            return this.userRepository.save(newObj);
+     
     }
 
     public void delete(Long id){
